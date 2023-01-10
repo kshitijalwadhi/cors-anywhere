@@ -44,6 +44,20 @@ cors_proxy.createServer({
     // Do not add X-Forwarded-For, etc. headers, because Heroku already adds it.
     xfwd: false,
   },
-}).listen(port, host, function() {
+}).listen(port, host, function () {
   console.log('Running CORS Anywhere on ' + host + ':' + port);
 });
+
+
+const express = require('express');
+const app = express();
+const keepAliveRoutes = require('./route_alive');
+
+// middleware
+app.use(express.json());
+app.use((req, res, next) => {
+  console.log(req.path, req.method);
+  next();
+});
+
+app.use('/alive', keepAliveRoutes);
